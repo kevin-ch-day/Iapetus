@@ -1,0 +1,104 @@
+[
+  {
+    "sample_id": "seed-benign-social-v1",
+    "sample_name": "benign social app",
+    "sample_type": "normal_app",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "FriendSphere",
+      "build_ref": "740001",
+      "app_category": "SocialMedia"
+    }
+  },
+  {
+    "sample_id": "seed-benign-messaging-v1",
+    "sample_name": "benign messaging app",
+    "sample_type": "normal_app",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.READ_CONTACTS"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "TalkFlow",
+      "build_ref": "740002",
+      "app_category": "Messaging"
+    }
+  },
+  {
+    "sample_id": "seed-benign-shortvideo-v1",
+    "sample_name": "benign short video app",
+    "sample_type": "normal_app",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.ACCESS_FINE_LOCATION"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "ClipNow",
+      "build_ref": "740003",
+      "app_category": "ShortVideo"
+    }
+  },
+  {
+    "sample_id": "seed-malware-banker-v1",
+    "sample_name": "malware banker",
+    "sample_type": "malware",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.READ_SMS",
+      "android.permission.RECEIVE_SMS",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Trojan",
+      "family": "Anubis",
+      "variant": "t",
+      "subtype": "Banker"
+    }
+  },
+  {
+    "sample_id": "seed-malware-rat-v1",
+    "sample_name": "malware RAT",
+    "sample_type": "malware",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.BIND_ACCESSIBILITY_SERVICE"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Backdoor",
+      "family": "SpyNote",
+      "variant": "x",
+      "subtype": "RAT"
+    }
+  },
+  {
+    "sample_id": "seed-malware-dropper-v1",
+    "sample_name": "malware dropper",
+    "sample_type": "malware",
+    "permissions": [
+      "android.permission.REQUEST_INSTALL_PACKAGES",
+      "android.permission.SYSTEM_ALERT_WINDOW",
+      "android.permission.INTERNET"
+    ],
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Trojan",
+      "family": "SharkBot",
+      "variant": "a",
+      "subtype": "Dropper"
+    }
+  }
+]

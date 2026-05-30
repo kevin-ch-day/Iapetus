@@ -117,7 +117,8 @@ def test_menu_roadmap_choice() -> None:
     assert result.exit_code == 0
     assert "ROADMAP" in result.stdout
     assert "M0  Kernel scaffold                 done" in result.stdout
-    assert "M1  Demo snapshot                   current" in result.stdout
+    assert "M1  Demo snapshot                   done" in result.stdout
+    assert "M2  Smoke learning engine           current" in result.stdout
     assert "M7  Real deep-learning models       later" in result.stdout
 
 

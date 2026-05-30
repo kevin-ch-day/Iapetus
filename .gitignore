@@ -5,6 +5,12 @@ __pycache__/
 *.log
 output/*
 !output/.gitkeep
+data/raw/*
+!data/raw/.gitkeep
+!data/raw/reference/
+!data/raw/reference/.gitkeep
+data/generated/*
+!data/generated/.gitkeep
 .pytest_cache/
 .coverage
 .mypy_cache/

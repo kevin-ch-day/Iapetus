@@ -7,7 +7,7 @@ The seed kernel is intentionally host-agnostic so it can run on Windows,
 Fedora, and Ubuntu for local development and testing. Fedora is the final
 deployment orientation.
 
-M0 is the seed kernel. M1 is the demo snapshot milestone.
+M0 is the seed kernel. M1 is the demo snapshot milestone. M2 is the smoke learning lifecycle milestone.
 
 It is intentionally small today and does not replace:
 
@@ -20,7 +20,7 @@ This repo remains a seed and intentionally avoids external integrations:
 
 - label rendering contracts
 - snapshot manifest creation and validation
-- local probe information
+- local probe and learning-run information
 - fixture-driven demos
 - future dataset-orchestration structure
 

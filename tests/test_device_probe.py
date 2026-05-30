@@ -50,6 +50,16 @@ def test_device_probe_unauthorized(monkeypatch: pytest.MonkeyPatch) -> None:
     assert collect_device_probe_state() == "unauthorized"
 
 
+def test_device_probe_offline_reports_error(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("iapetus.probes.environment.shutil.which", lambda name: "adb")
+
+    def _fake_run(*args, **kwargs):
+        return _RunResult(0, "List of devices attached\ntest-device\toffline\n")
+
+    monkeypatch.setattr("iapetus.probes.environment.subprocess.run", _fake_run)
+    assert collect_device_probe_state() == "error"
+
+
 def test_device_probe_multiple_devices(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr("iapetus.probes.environment.shutil.which", lambda name: "adb")
 

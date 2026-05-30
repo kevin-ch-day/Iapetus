@@ -1,0 +1,107 @@
+[
+  {
+    "permission": "android.permission.INTERNET",
+    "category": "network",
+    "rough_risk": "low",
+    "common_context": "apps opening API calls",
+    "notes": "Allows general outbound network access; common for most apps."
+  },
+  {
+    "permission": "android.permission.ACCESS_NETWORK_STATE",
+    "category": "network",
+    "rough_risk": "low",
+    "common_context": "status checks and connectivity-aware logic",
+    "notes": "Usually paired with INTERNET to gate network usage."
+  },
+  {
+    "permission": "android.permission.READ_SMS",
+    "category": "telephony",
+    "rough_risk": "critical",
+    "common_context": "SMS interception tooling",
+    "notes": "High privacy impact if abused to read SMS content."
+  },
+  {
+    "permission": "android.permission.RECEIVE_SMS",
+    "category": "telephony",
+    "rough_risk": "high",
+    "common_context": "OTP and message receiver behavior",
+    "notes": "Can collect or react to incoming SMS for secondary flows."
+  },
+  {
+    "permission": "android.permission.SEND_SMS",
+    "category": "telephony",
+    "rough_risk": "critical",
+    "common_context": "background messaging/abuse",
+    "notes": "Can be used for unsolicited SMS sending and premium abuse."
+  },
+  {
+    "permission": "android.permission.READ_PHONE_STATE",
+    "category": "telephony",
+    "rough_risk": "medium",
+    "common_context": "device information and SIM state",
+    "notes": "Sometimes over-requested; can aid tracking and fingerprinting."
+  },
+  {
+    "permission": "android.permission.SYSTEM_ALERT_WINDOW",
+    "category": "overlay",
+    "rough_risk": "high",
+    "common_context": "overlay UIs and clickjacking behavior",
+    "notes": "Can create overlays above other apps."
+  },
+  {
+    "permission": "android.permission.BIND_ACCESSIBILITY_SERVICE",
+    "category": "accessibility",
+    "rough_risk": "critical",
+    "common_context": "input observation services",
+    "notes": "Very powerful privileged-style accessibility control."
+  },
+  {
+    "permission": "android.permission.QUERY_ALL_PACKAGES",
+    "category": "package_visibility",
+    "rough_risk": "high",
+    "common_context": "package enumeration",
+    "notes": "Allows broad package visibility; often suspicious outside system tooling."
+  },
+  {
+    "permission": "android.permission.CAMERA",
+    "category": "media",
+    "rough_risk": "high",
+    "common_context": "image/video capture",
+    "notes": "Sensitive sensor; expect explicit user context."
+  },
+  {
+    "permission": "android.permission.RECORD_AUDIO",
+    "category": "media",
+    "rough_risk": "high",
+    "common_context": "audio capture and VoIP",
+    "notes": "Can capture microphone input."
+  },
+  {
+    "permission": "android.permission.READ_CONTACTS",
+    "category": "contacts",
+    "rough_risk": "medium",
+    "common_context": "contact sync and invitation flows",
+    "notes": "Contact harvesting is a common exfiltration vector."
+  },
+  {
+    "permission": "android.permission.ACCESS_FINE_LOCATION",
+    "category": "location",
+    "rough_risk": "medium",
+    "common_context": "location services and geofencing",
+    "notes": "Can reveal precise user movement patterns."
+  },
+  {
+    "permission": "android.permission.REQUEST_INSTALL_PACKAGES",
+    "category": "installation",
+    "rough_risk": "critical",
+    "common_context": "secondary installer prompts",
+    "notes": "Potentially enables chained app install behavior."
+  },
+  {
+    "permission": "android.permission.RECEIVE_BOOT_COMPLETED",
+    "category": "boot",
+    "rough_risk": "medium",
+    "common_context": "auto-start components",
+    "notes": "Enables startup persistence after boot."
+  }
+]

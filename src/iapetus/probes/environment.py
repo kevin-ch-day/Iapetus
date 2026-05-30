@@ -108,6 +108,8 @@ def collect_device_probe_state(timeout_seconds: float = 2.0) -> DeviceProbeState
     status = rows[0].split()
     if len(status) < 2:
         return "error"
+    if status[1] == "device":
+        return "connected"
     if status[1] == "unauthorized":
         return "unauthorized"
-    return "connected"
+    return "error"

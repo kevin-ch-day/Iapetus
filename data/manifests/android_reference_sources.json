@@ -1,0 +1,38 @@
+[
+  {
+    "source_id": "android-manifest-permission-docs",
+    "source_name": "Android Manifest.permission reference",
+    "source_url": "https://developer.android.com/reference/android/Manifest.permission",
+    "retrieved_at": "2026-05-29T00:00:00+00:00",
+    "local_path": "raw/reference/android_manifest_permission_docs.html",
+    "sha256": "pending",
+    "license_or_terms_note": "Android docs terms apply; public docs page.",
+    "purpose": "Permission strings and protection-level descriptions.",
+    "source_kind": "documentation",
+    "trusted_level": "medium"
+  },
+  {
+    "source_id": "android-manifest-overview-docs",
+    "source_name": "Android developer manifest overview",
+    "source_url": "https://developer.android.com/guide/topics/manifest/manifest-intro",
+    "retrieved_at": "2026-05-29T00:00:00+00:00",
+    "local_path": "raw/reference/android_manifest_overview.html",
+    "sha256": "pending",
+    "license_or_terms_note": "Android docs terms apply; public docs page.",
+    "purpose": "Static manifest structure and component semantics.",
+    "source_kind": "documentation",
+    "trusted_level": "medium"
+  },
+  {
+    "source_id": "owasp-masvs",
+    "source_name": "OWASP MASVS project",
+    "source_url": "https://github.com/OWASP/owasp-masvs",
+    "retrieved_at": "2026-05-29T00:00:00+00:00",
+    "local_path": "raw/reference/owasp_masvs.html",
+    "sha256": "pending",
+    "license_or_terms_note": "Check upstream project license terms before redistribution.",
+    "purpose": "Baseline Android mobile security control references.",
+    "source_kind": "reference_project",
+    "trusted_level": "high"
+  }
+]

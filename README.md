@@ -32,7 +32,7 @@ data from:
 
 ## Status
 
-Seed repository. M0 is seed kernel. M1 is demo snapshot milestone.
+Seed repository. M0 is the seed kernel. M1 is the demo snapshot milestone. M2 adds smoke learning lifecycle.
 Not production-ready.
 
 ## Commands
@@ -43,12 +43,24 @@ Not production-ready.
 - `iapetus labels demo` - prints example malware and normal app labels.
 - `iapetus snapshot demo` - prints a sample demo snapshot manifest and rendered labels.
 - `iapetus snapshot demo --write` - writes demo snapshot JSON files.
+- `iapetus status` - prints seed host and pipeline status.
+- `iapetus learn run --mode smoke [--write] [--output-dir <path>]` - run smoke learning.
+- `iapetus learn list` - list prior learning runs.
+- `iapetus learn last` - show latest learning run summary.
+- `iapetus dataset shape` - show planned dataset shape.
+- `iapetus knowledge concepts` - list built-in knowledge concepts.
+- `iapetus knowledge teach` - show a seed learning topic list.
+- `iapetus knowledge teach android_fundamentals` - print a focused Android teaching module.
+- `iapetus knowledge data` - list synthetic seed Android datasets.
+- `iapetus knowledge data android_apps` - print fake app entities for training.
+- `iapetus knowledge data permission_levels` - print fake permission taxonomy examples.
+- `iapetus knowledge data dataset_rows` - print synthetic dataset-shape rows.
 
 ## Milestones
 
-- M0 - Seed kernel (current): local package skeleton, label renderer, probe, tests.
-- M1 - Demo snapshot (this step): built-in fixtures, snapshot manifest builder,
-  and optional JSON output to `output/demo_snapshot/`.
+- M0 - Seed kernel: local package skeleton, label renderer, probe, tests.
+- M1 - Demo snapshot: built-in fixtures, snapshot manifest builder, and optional JSON output to `output/demo_snapshot/`.
+- M2 - Smoke learning engine: fixture-based smoke summary/artifact writer, list, and last-run preview.
 
 ## Quick Start (Windows for dev, Fedora for deployment target)
 

@@ -1,0 +1,100 @@
+[
+  {
+    "token": "AndroidManifest.xml",
+    "token_type": "archive_entry",
+    "meaning": "Primary manifest descriptor for an APK.",
+    "android_relevance": "critical",
+    "suspicious_when": "Missing or malformed declaration blocks; suspicious receivers."
+  },
+  {
+    "token": "classes.dex",
+    "token_type": "archive_entry",
+    "meaning": "Dalvik bytecode payload.",
+    "android_relevance": "critical",
+    "suspicious_when": "Custom loaders or suspicious reflection paths are present."
+  },
+  {
+    "token": "resources.arsc",
+    "token_type": "archive_entry",
+    "meaning": "Packed resources table.",
+    "android_relevance": "high",
+    "suspicious_when": "Resource flags suggest hidden launcher or deceptive entry points."
+  },
+  {
+    "token": "META-INF",
+    "token_type": "archive_entry",
+    "meaning": "Signing metadata and manifest hashes.",
+    "android_relevance": "high",
+    "suspicious_when": "Signature blocks look inconsistent with expected signing policy."
+  },
+  {
+    "token": "DexClassLoader",
+    "token_type": "code_string",
+    "meaning": "Dynamic dex loading API usage.",
+    "android_relevance": "high",
+    "suspicious_when": "Used without strong integrity or origin checks."
+  },
+  {
+    "token": "TelephonyManager",
+    "token_type": "api_symbol",
+    "meaning": "Telephony API surface.",
+    "android_relevance": "medium",
+    "suspicious_when": "Coupled with SMS/IMSI handling without clear UI."
+  },
+  {
+    "token": "SmsManager",
+    "token_type": "api_symbol",
+    "meaning": "SMS API for sending and status queries.",
+    "android_relevance": "high",
+    "suspicious_when": "Silent messaging or bulk SMS behavior."
+  },
+  {
+    "token": "AccessibilityService",
+    "token_type": "api_symbol",
+    "meaning": "Accessibility service usage.",
+    "android_relevance": "critical",
+    "suspicious_when": "Broad event capture with non-UI accessibility intent."
+  },
+  {
+    "token": "BOOT_COMPLETED",
+    "token_type": "static_intent",
+    "meaning": "Boot completed broadcast symbol.",
+    "android_relevance": "high",
+    "suspicious_when": "No user-visible foreground function yet registers boot actions."
+  },
+  {
+    "token": "SMS_RECEIVED",
+    "token_type": "static_intent",
+    "meaning": "SMS broadcast symbol.",
+    "android_relevance": "high",
+    "suspicious_when": "Collecting SMS while presenting non-messaging UI."
+  },
+  {
+    "token": "usesCleartextTraffic=true",
+    "token_type": "manifest_flag",
+    "meaning": "Manifest allows cleartext network traffic.",
+    "android_relevance": "medium",
+    "suspicious_when": "Used in finance-like app contexts."
+  },
+  {
+    "token": "allowBackup=true",
+    "token_type": "manifest_flag",
+    "meaning": "Backup allowed for app data.",
+    "android_relevance": "medium",
+    "suspicious_when": "Sensitive data apps set backup true without data masking."
+  },
+  {
+    "token": "http://",
+    "token_type": "string_pattern",
+    "meaning": "Potential plaintext transport usage.",
+    "android_relevance": "high",
+    "suspicious_when": "Unencrypted URLs appear in auth-related code."
+  },
+  {
+    "token": "https://",
+    "token_type": "string_pattern",
+    "meaning": "TLS endpoint usage marker.",
+    "android_relevance": "low",
+    "suspicious_when": "Only suspicious when hardcoded in obfuscation-heavy payloads."
+  }
+]
