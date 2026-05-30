@@ -4,7 +4,7 @@ from typer.testing import CliRunner
 
 from iapetus.cli import app
 from iapetus.knowledge import get_dataset_row_count, list_fake_topics, run_concepts
-from iapetus.knowledge.registry import ArtifactClassifier, classify_artifact
+from iapetus.knowledge.knowledge_artifact_registry import ArtifactClassifier, classify_artifact
 
 
 def test_concept_registry_contains_core_android_concepts() -> None:

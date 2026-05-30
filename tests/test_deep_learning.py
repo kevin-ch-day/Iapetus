@@ -6,11 +6,11 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.learning.deep.features import STATIC_FEATURE_NAMES, prepare_training_batch
-from iapetus.learning.deep.inference import evaluate_saved_run, load_model_bundle, predict_fixture
-from iapetus.learning.deep.trainer import train_static_mlp
-from iapetus.learning.static_v1 import build_static_v1_result, write_static_v1_artifacts
-from iapetus.learning.training_corpus import build_training_corpus
+from iapetus.learning.deep.training_feature_encoding import STATIC_FEATURE_NAMES, prepare_training_batch
+from iapetus.learning.deep.static_mlp_inference import evaluate_saved_run, load_model_bundle, predict_fixture
+from iapetus.learning.deep.static_mlp_trainer import train_static_mlp
+from iapetus.learning.static_mlp_training_pipeline import build_static_v1_result, write_static_v1_artifacts
+from iapetus.learning.quality_gated_training_corpus import build_training_corpus
 
 
 def test_feature_matrix_shape_matches_schema() -> None:
@@ -25,6 +25,12 @@ def test_static_mlp_trains_with_high_loocv_accuracy() -> None:
     assert report["training_example_count"] == 12
     assert report["loocv"]["accuracy"] >= 0.75
     assert report["classification_train_accuracy"] >= 0.75
+    subgroup_train = report["classification_subgroup_train_accuracy"]
+    assert subgroup_train["malware"] >= 0.75
+    assert subgroup_train["benign"] >= 0.75
+    subgroup_loocv = report["classification_subgroup_loocv"]
+    assert subgroup_loocv["malware"]["method"] == "leave_one_out"
+    assert subgroup_loocv["benign"]["method"] == "leave_one_out"
     assert all(row["entity_kind_correct"] for row in report["predictions"])
     assert all(row["classification_correct"] for row in report["predictions"])
     assert malware_model is not None
@@ -104,10 +110,13 @@ def test_evaluate_saved_run(tmp_path: Path) -> None:
     evaluation = evaluate_saved_run(bundle)
     assert evaluation["entity_kind_accuracy"] >= 0.75
     assert evaluation["classification_accuracy"] >= 0.75
+    subgroup = evaluation["classification_subgroup_accuracy"]
+    assert subgroup["malware"] >= 0.75
+    assert subgroup["benign"] >= 0.75
 
 
 def test_learn_train_cli(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "runs")
     result = CliRunner().invoke(app, ["learn", "train", "--backend", "pure_python"])
     assert result.exit_code == 0
     assert "LOOCV" in result.stdout
@@ -115,7 +124,7 @@ def test_learn_train_cli(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_learn_predict_cli(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "runs")
     runner = CliRunner()
     train = runner.invoke(app, ["learn", "train", "--backend", "pure_python", "--output-dir", str(tmp_path / "runs")])
     assert train.exit_code == 0
@@ -128,7 +137,7 @@ def test_learn_predict_cli(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_learn_run_static_v1_mode(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "runs")
     result = CliRunner().invoke(
         app,
         [

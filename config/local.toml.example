@@ -1,0 +1,11 @@
+# Copy to config/local.toml to override seed filesystem layout (optional).
+# Paths are relative to the process working directory unless absolute.
+
+[paths]
+# data_dir = "data"
+# output_dir = "output"
+# generated_dir = "data/generated"
+# learning_index_db_path = "data/generated/iapetus_learning.db"
+# learning_runs_dir = "output/learning_runs"
+# demo_snapshot_dir = "output/demo_snapshot"
+# curated_snapshot_dir = "output/curated_snapshot"

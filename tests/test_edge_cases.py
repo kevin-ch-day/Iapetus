@@ -3,8 +3,8 @@ from __future__ import annotations
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.validation.edge_cases import load_edge_case_fixtures, run_edge_case_analysis
-from iapetus.validation.fixture_quality import validate_fixture_quality
+from iapetus.validation.validation_edge_cases import load_edge_case_fixtures, run_edge_case_analysis
+from iapetus.validation.fixture_quality_report import validate_fixture_quality
 
 
 def test_edge_case_fixture_count() -> None:

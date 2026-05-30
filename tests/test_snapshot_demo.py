@@ -5,8 +5,8 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.labels.renderer import render_malware_label, render_normal_app_label
-from iapetus.snapshots.demo import build_demo_snapshot, demo_fixtures
+from iapetus.labels.malware_label_text_renderer import render_malware_label, render_normal_app_label
+from iapetus.snapshots.demo_snapshot_builder import build_demo_snapshot, demo_fixtures
 import pytest
 
 
@@ -62,7 +62,7 @@ def test_snapshot_demo_write_flag(tmp_path: Path) -> None:
 
 def test_snapshot_demo_write_error_reports_exit(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "iapetus.cli.snapshot_output",
+        "iapetus.cli.typer_snapshot_subcommands.snapshot_output",
         lambda *args, **kwargs: (_ for _ in ()).throw(OSError("read-only filesystem")),
     )
     result = CliRunner().invoke(

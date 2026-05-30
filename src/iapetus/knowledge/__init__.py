@@ -3,7 +3,7 @@
 from pathlib import Path
 from typing import Iterable
 
-from .android import (
+from .android_platform_concepts import (
     ArtifactTypeKnowledge,
     EvidenceTypeKnowledge,
     KnowledgeConcept,
@@ -17,7 +17,7 @@ from .android import (
     apk_concept,
     permission_model_concept,
 )
-from .registry import (
+from .knowledge_artifact_registry import (
     ArtifactRelevance,
     ArtifactType,
     ArtifactClassification,
@@ -35,12 +35,12 @@ from .registry import (
     print_concepts,
     classify_artifact,
 )
-from .apk import (
+from .apk_anatomy_reference import (
     ApkAnatomyPart,
     APK_ANATOMY_PARTS,
     apk_anatomy_lines as apk_anatomy_lines,
 )
-from .fake import (
+from .synthetic_android_samples import (
     FakePermission,
     FakeComponent,
     FakeAndroidArtifact,

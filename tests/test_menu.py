@@ -41,7 +41,7 @@ def test_menu_run_deep_learning_curated_summary() -> None:
 
 def test_menu_learning_console_help_command() -> None:
     runner = CliRunner()
-    result = runner.invoke(app, ["menu", "--choice", "2", "-c", "help"])
+    result = runner.invoke(app, ["menu", "--choice", "2", "--console-command", "help"])
     assert result.exit_code == 0
     assert "LEARNING CONSOLE" in result.stdout
     assert "iapetus> status" in result.stdout
@@ -127,7 +127,8 @@ def test_menu_roadmap_choice() -> None:
     assert "M0  Kernel scaffold                 done" in result.stdout
     assert "M1  Demo snapshot                   done" in result.stdout
     assert "M2  Smoke learning engine           done" in result.stdout
-    assert "M5  Static MLP v1 (seed deep learn)  current" in result.stdout
+    assert "M5  Static MLP v2 (seed deep learn)  done" in result.stdout
+    assert "M6  Learning run index (SQLite)    seed" in result.stdout
     assert "M9  Production-scale DL pipelines   later" in result.stdout
 
 

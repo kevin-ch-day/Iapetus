@@ -6,12 +6,12 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.fixture_analysis import (
+from iapetus.curated_fixture_analysis import (
     extract_fixture_token_groups,
     fixture_record,
     resolve_fixture,
 )
-from iapetus.learning.concept_trainer import (
+from iapetus.learning.curated_concept_trainer import (
     absorb_curated_seed,
     build_token_vocabulary_document,
     compare_fixtures,

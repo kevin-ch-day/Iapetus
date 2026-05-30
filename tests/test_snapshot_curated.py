@@ -6,7 +6,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.snapshots.demo import build_curated_snapshot
+from iapetus.snapshots.demo_snapshot_builder import build_curated_snapshot
 
 
 def test_build_curated_snapshot_has_banker_package() -> None:

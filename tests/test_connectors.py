@@ -19,3 +19,15 @@ def test_connectors_cli_shows_planned_artifacts() -> None:
     assert result.exit_code == 0
     assert "planned artifacts" in result.stdout
     assert "entity_token_groups.json" in result.stdout
+
+
+def test_connectors_show_erebus() -> None:
+    result = CliRunner().invoke(app, ["connectors", "show", "erebus"])
+    assert result.exit_code == 0
+    assert "Erebus" in result.stdout
+    assert "entity_features.json" in result.stdout
+
+
+def test_connectors_show_unknown() -> None:
+    result = CliRunner().invoke(app, ["connectors", "show", "not_a_connector"])
+    assert result.exit_code == 1

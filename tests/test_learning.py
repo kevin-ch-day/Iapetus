@@ -8,7 +8,7 @@ from typer.testing import CliRunner
 
 from iapetus.cli import app
 from iapetus.learning import build_smoke_result, write_learning_artifacts
-from iapetus.data_library import build_feature_vocabulary, build_token_summary
+from iapetus.curated_seed_library_exports import build_feature_vocabulary, build_token_summary
 
 
 def test_learn_run_smoke_write_creates_artifacts(tmp_path: Path) -> None:
@@ -40,14 +40,14 @@ def test_learn_run_smoke_write_creates_artifacts(tmp_path: Path) -> None:
 
 
 def test_learn_list_no_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "empty_runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "empty_runs")
     result = CliRunner().invoke(app, ["learn", "list"])
     assert result.exit_code == 0
     assert "No learning runs found." in result.stdout
 
 
 def test_learn_last_no_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "empty_runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "empty_runs")
     result = CliRunner().invoke(app, ["learn", "last"])
     assert result.exit_code == 0
     assert "No learning runs found." in result.stdout
@@ -56,7 +56,7 @@ def test_learn_last_no_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> 
 def test_learn_last_reads_latest_run(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     output_root = tmp_path / "learning_runs"
     output_root.mkdir()
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", output_root)
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", output_root)
 
     older, older_labels = build_smoke_result(
         run_id="run-old",
@@ -80,16 +80,16 @@ def test_learn_last_reads_latest_run(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
 def test_status_command_reports_mode_and_counts(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
     monkeypatch.setattr(
-        "iapetus.cli.collect_environment_info",
+        "iapetus.cli.cli_console_and_path_helpers.collect_environment_info",
         lambda: type(
             "Info",
             (),
             {"system": "Windows", "release": "11", "python_version": "3.14.5"},
         )(),
     )
-    monkeypatch.setattr("iapetus.cli.collect_device_probe_state", lambda timeout_seconds=2.0: "adb_missing")
-    monkeypatch.setattr("iapetus.cli.LEARNING_RUNS_DIR", tmp_path / "learning_runs")
-    monkeypatch.setattr("iapetus.cli.DEMO_OUTPUT_DIR", tmp_path / "demo_snapshot")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.collect_device_probe_state", lambda timeout_seconds=2.0: "adb_missing")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.LEARNING_RUNS_DIR", tmp_path / "learning_runs")
+    monkeypatch.setattr("iapetus.cli.cli_console_and_path_helpers.DEMO_OUTPUT_DIR", tmp_path / "demo_snapshot")
 
     (tmp_path / "learning_runs").mkdir()
     (tmp_path / "demo_snapshot").mkdir()

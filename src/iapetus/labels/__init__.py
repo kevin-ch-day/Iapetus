@@ -1,6 +1,6 @@
 """Label rendering interfaces for Iapetus."""
 
-from .renderer import (
+from .malware_label_text_renderer import (
     InvalidLabelError,
     NormalAppLabel,
     MalwareLabel,

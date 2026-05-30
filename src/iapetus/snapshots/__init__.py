@@ -1,7 +1,7 @@
 """Snapshot models for seed kernel artifacts."""
 
-from .demo import DEMO_OUTPUT_DIR, DemoSnapshot, build_demo_snapshot, snapshot_output
-from .manifest import SnapshotManifest
+from .demo_snapshot_builder import DEMO_OUTPUT_DIR, DemoSnapshot, build_demo_snapshot, snapshot_output
+from .snapshot_manifest_models import SnapshotManifest
 
 __all__ = [
     "DemoSnapshot",

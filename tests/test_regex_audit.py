@@ -3,13 +3,13 @@ from __future__ import annotations
 from typer.testing import CliRunner
 
 from iapetus.cli import app
-from iapetus.validation.fixture_quality import (
+from iapetus.validation.fixture_quality_report import (
     _MALWARE_LABEL_RE,
     _NORMAL_LABEL_RE,
     label_structure_issues,
     package_name_issues,
 )
-from iapetus.validation.regex_audit import run_regex_audit
+from iapetus.validation.label_permission_regex_audit import run_regex_audit
 
 
 def test_malware_and_normal_regex_are_mutually_exclusive_on_curated_shapes() -> None:

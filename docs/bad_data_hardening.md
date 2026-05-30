@@ -7,7 +7,7 @@ kernel accepts too easily and what it fails to explain.
 ## Location
 
 - `tests/fixtures/android_bad_fixture_samples_seed.json`
-- Loader: `iapetus.validation.adversarial_fixtures`
+- Loader: `iapetus.validation.adversarial_fixture_validation`
 
 The JSON wrapper marks `fixture_set: adversarial_test` and `not_training_truth: true`.
 
@@ -38,6 +38,7 @@ python -m iapetus.cli bad-data probe
 python -m iapetus.cli bad-data regex-audit
 python -m iapetus.cli bad-data edge-cases
 python -m iapetus.cli bad-data gaps
+python -m iapetus.cli bad-data gaps --write   # also writes data/generated/gap_report.json
 ```
 
 ## Issue categories
@@ -57,7 +58,7 @@ python -m iapetus.cli bad-data gaps
 
 ## Training eligibility gates
 
-Shared rules live in `iapetus.validation.fixture_quality`:
+Shared rules live in `iapetus.validation.fixture_quality_report`:
 
 - Curated good fixtures must be `training_eligible` before `learn run --use-curated` writes artifacts.
 - `entity_features.json` rows include `training_eligible`, `quality_issues`, and `training_blockers`.

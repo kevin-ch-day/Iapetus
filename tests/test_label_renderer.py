@@ -6,7 +6,7 @@ from iapetus.labels import (
     render_malware_label,
     render_normal_app_label,
 )
-from iapetus.labels.renderer import InvalidLabelError
+from iapetus.labels.malware_label_text_renderer import InvalidLabelError
 
 
 def test_render_malware_label() -> None:

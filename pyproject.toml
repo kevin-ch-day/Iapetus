@@ -1,7 +1,7 @@
 [project]
 name = "iapetus"
 version = "0.0.1"
-description = "Fedora-only Android security deep-learning platform kernel"
+description = "Android security deep-learning platform kernel (Fedora-oriented seed)"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

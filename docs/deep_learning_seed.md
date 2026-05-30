@@ -28,7 +28,8 @@ python -m iapetus.cli learn predict --fixture malware_banker
 python -m iapetus.cli learn evaluate
 
 # Same via learn run
-python -m iapetus.cli learn run --mode static-v1 --use-curated --write --backend pure_python
+python -m iapetus.cli learn run --mode static-v2 --use-curated --write --backend pure_python
+# static-v1 mode name is kept as an alias for static-v2
 
 # Menu: Run Deep Learning -> [3] train, [4] evaluate
 python -m iapetus.cli menu --choice 1 --deep-choice 3
@@ -38,7 +39,7 @@ python -m iapetus.cli menu --choice 1 --deep-choice 3
 
 | File | Purpose |
 |------|---------|
-| `training_metrics.json` | Train accuracy, LOOCV accuracy, loss tail |
+| `training_metrics.json` | Train accuracy, entity LOOCV, subgroup classification LOOCV, loss tail |
 | `predictions.json` | Per-fixture predicted vs expected entity_kind |
 | `model_weights.json` | Entity-kind MLP weights (pure Python) |
 | `malware_classification_weights.json` | Malware subtype head (pure Python) |
@@ -58,9 +59,18 @@ The curated corpus has **12 samples**. Training reports **leave-one-out cross-va
 because holdout splits would be too small. LOOCV scores are useful to sanity-check feature
 separability in seed mode; they are **not** production generalization metrics.
 
+## Subgroup metrics
+
+Training reports:
+
+- `classification_subgroup_train_accuracy` — in-sample fit per head (malware / benign).
+- `classification_subgroup_loocv` — leave-one-out stress test per head (often low with six
+  one-sample classes; useful to spot overfitting vs the train metric).
+
+These are sanity metrics on the tiny seed corpus, not production generalization.
+
 ## Next steps (later milestones)
 
-- Subgroup LOOCV within malware-only and benign-only folds.
 - Permission-token embeddings and sequence models.
 - APK / dex byte inputs when connectors supply real artifacts.
 - Federated ingestion from Erebus, ObsidianDroid, and device runtime windows.
