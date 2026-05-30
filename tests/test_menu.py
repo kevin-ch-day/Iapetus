@@ -31,11 +31,12 @@ def test_menu_run_deep_learning_smoke() -> None:
     assert "Status      : PASS" in result.stdout
 
 
-def test_menu_run_deep_learning_pending_items_show_seed_notice() -> None:
+def test_menu_run_deep_learning_curated_summary() -> None:
     runner = CliRunner()
     result = runner.invoke(app, ["menu", "--choice", "1", "--deep-choice", "2"])
     assert result.exit_code == 0
-    assert "Not available yet in seed mode." in result.stdout
+    assert "curated seed fixtures" in result.stdout
+    assert "Entities    : 12" in result.stdout
 
 
 def test_menu_learning_console_help_command() -> None:
@@ -66,9 +67,16 @@ def test_menu_learning_console_batch_exit_command() -> None:
     assert "Learning console closed." in result.stdout
 
 
-def test_menu_deep_learning_invalid_choice_fails() -> None:
+def test_menu_deep_learning_watch_mode_pending() -> None:
     runner = CliRunner()
     result = runner.invoke(app, ["menu", "--choice", "1", "--deep-choice", "5"])
+    assert result.exit_code == 0
+    assert "Not available yet in seed mode." in result.stdout
+
+
+def test_menu_deep_learning_invalid_choice_fails() -> None:
+    runner = CliRunner()
+    result = runner.invoke(app, ["menu", "--choice", "1", "--deep-choice", "9"])
     assert result.exit_code == 2
     assert "Invalid value for '--deep-choice'" in result.stderr
 
@@ -107,8 +115,8 @@ def test_menu_connector_registry_choice() -> None:
     result = runner.invoke(app, ["menu", "--choice", "6"])
     assert result.exit_code == 0
     assert "CONNECTOR REGISTRY" in result.stdout
-    assert "Erebus             : not connected" in result.stdout
-    assert "ObsidianDroid      : not connected" in result.stdout
+    assert "planned artifacts: entities.json" in result.stdout
+    assert "ObsidianDroid" in result.stdout
 
 
 def test_menu_roadmap_choice() -> None:
@@ -118,8 +126,9 @@ def test_menu_roadmap_choice() -> None:
     assert "ROADMAP" in result.stdout
     assert "M0  Kernel scaffold                 done" in result.stdout
     assert "M1  Demo snapshot                   done" in result.stdout
-    assert "M2  Smoke learning engine           current" in result.stdout
-    assert "M7  Real deep-learning models       later" in result.stdout
+    assert "M2  Smoke learning engine           done" in result.stdout
+    assert "M5  Static MLP v1 (seed deep learn)  current" in result.stdout
+    assert "M9  Production-scale DL pipelines   later" in result.stdout
 
 
 def test_menu_help_choice() -> None:

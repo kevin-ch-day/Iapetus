@@ -11,6 +11,11 @@ dependencies = [
     "pytest>=8.0",
 ]
 
+[project.optional-dependencies]
+ml = [
+    "torch>=2.2",
+]
+
 [project.scripts]
 iapetus = "iapetus.cli:app"
 

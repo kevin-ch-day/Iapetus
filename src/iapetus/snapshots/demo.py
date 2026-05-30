@@ -12,11 +12,14 @@ from iapetus.labels import (
     NormalAppLabel,
 )
 from iapetus.labels.renderer import render_malware_label, render_normal_app_label
+from iapetus.fixture_analysis import build_curated_entity_artifacts, fixture_record
+from iapetus.data_library import load_fixture_seed
 
 from .manifest import SnapshotManifest
 
 
 DEMO_OUTPUT_DIR = Path("output/demo_snapshot")
+CURATED_SNAPSHOT_DIR = Path("output/curated_snapshot")
 
 
 class DemoSnapshot(BaseModel):
@@ -81,6 +84,24 @@ def _labels_from_entities(
     return labels
 
 
+def build_curated_snapshot(
+    name: str = "m3.5-curated-snapshot",
+    purpose: str = "Curated fixture snapshot with static-analysis-shaped entities.",
+) -> DemoSnapshot:
+    entities = [fixture_record(item) for item in load_fixture_seed()]
+    labels = [entity["rendered_label"] for entity in entities]
+    manifest = SnapshotManifest(
+        name=name,
+        entity_count=len(entities),
+        purpose=purpose,
+    )
+    return DemoSnapshot(
+        manifest=manifest,
+        entities=cast(list[dict], entities),
+        labels=labels,
+    )
+
+
 def build_demo_snapshot(
     name: str = "m1-demo-snapshot",
     purpose: str = "M1 demo snapshot containing seed entities and rendered labels.",
@@ -101,7 +122,12 @@ def build_demo_snapshot(
     )
 
 
-def snapshot_output(payload: DemoSnapshot, output_dir: Path) -> None:
+def snapshot_output(
+    payload: DemoSnapshot,
+    output_dir: Path,
+    *,
+    write_curated_extras: bool = False,
+) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "manifest.json").write_text(payload.manifest.model_dump_json(indent=2), encoding="utf-8")
     (output_dir / "entities.json").write_text(
@@ -112,3 +138,28 @@ def snapshot_output(payload: DemoSnapshot, output_dir: Path) -> None:
         json.dumps(payload.labels, indent=2),
         encoding="utf-8",
     )
+    if write_curated_extras:
+        entities, token_groups, features = build_curated_entity_artifacts()
+        labeled_entities = [
+            {
+                "sample_id": row["sample_id"],
+                "fixture_slug": row["fixture_slug"],
+                "entity_kind": row["entity_kind"],
+                "package_name": row["package_name"],
+                "rendered_label": row["rendered_label"],
+                "expected_classification": row["expected_classification"],
+            }
+            for row in entities
+        ]
+        (output_dir / "labeled_entities.json").write_text(
+            json.dumps(labeled_entities, indent=2),
+            encoding="utf-8",
+        )
+        (output_dir / "entity_token_groups.json").write_text(
+            json.dumps(token_groups, indent=2),
+            encoding="utf-8",
+        )
+        (output_dir / "entity_features.json").write_text(
+            json.dumps(features, indent=2),
+            encoding="utf-8",
+        )

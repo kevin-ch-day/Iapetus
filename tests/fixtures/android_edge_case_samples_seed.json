@@ -1,0 +1,237 @@
+{
+  "fixture_set": "edge_case_test",
+  "not_training_truth": true,
+  "purpose": "Borderline rows to observe validation behavior; never used for training.",
+  "fixtures": [
+    {
+      "sample_id": "edge-normal-malware-rendered-v1",
+      "sample_name": "normal app with malware rendered label",
+      "fixture_slug": "edge_normal_malware_rendered",
+      "description": "sample_type says benign but rendered_label is malware-shaped",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.normalmal",
+      "rendered_label": "AndroidOS:Trojan.Anubis-t:[Banker]",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "EdgeNormal",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-malware-normal-rendered-v1",
+      "sample_name": "malware with normal rendered label",
+      "fixture_slug": "edge_malware_normal_rendered",
+      "description": "sample_type says malware but rendered_label is normal-shaped",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.malnormal",
+      "rendered_label": "AndroidOS:Fakebook-740001:[SocialMedia]",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "Anubis",
+        "variant": "t",
+        "subtype": "Banker"
+      },
+      "expected_issues": ["entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-smuggled-dot-label-v1",
+      "sample_name": "smuggled dot in app name label",
+      "fixture_slug": "edge_smuggled_dot_label",
+      "description": "Face.book-1 looks like build_ref smuggled via a dot",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.smuggle",
+      "rendered_label": "AndroidOS:Face.book-1:[SocialMedia]",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "Face",
+        "build_ref": "1",
+        "app_category": "SocialMedia"
+      },
+      "expected_issues": ["malformed_label", "entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-duplicate-permissions-v1",
+      "sample_name": "duplicate permission entries",
+      "fixture_slug": "edge_duplicate_permissions",
+      "description": "Same permission listed twice should not be training-safe",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.dupperm",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.INTERNET"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "DupPerm",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["malformed_permission"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-empty-permissions-v1",
+      "sample_name": "empty permissions list",
+      "fixture_slug": "edge_empty_permissions",
+      "description": "No permissions at all on an Android row",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.noperm",
+      "permissions": [],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "NoPerm",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["malformed_permission"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-unknown-sample-type-v1",
+      "sample_name": "unknown sample_type string",
+      "fixture_slug": "edge_unknown_sample_type",
+      "description": "Unrecognized sample_type should not be training-eligible",
+      "sample_type": "application",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.unknown",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "UnknownType",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-hybrid-label-fields-v1",
+      "sample_name": "hybrid malware and normal label fields",
+      "fixture_slug": "edge_hybrid_label_fields",
+      "description": "labels dict mixes malware and normal_app keys",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.hybrid",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "Hybrid",
+        "variant": "h",
+        "subtype": "Banker",
+        "app_name": "Sneak",
+        "app_category": "SocialMedia"
+      },
+      "expected_issues": ["entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-apk-filename-only-v1",
+      "sample_name": "apk extension with file_name only",
+      "fixture_slug": "edge_apk_filename_only",
+      "description": "Identity from file_name without package_name (allowed identity path)",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "file_name": "cool.apk",
+      "file_extension": "apk",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "CoolApk",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": [],
+      "expected_training_eligible": true,
+      "observe_note": "Passes today: file_name satisfies identity; review before real connectors."
+    },
+    {
+      "sample_id": "edge-invalid-subtype-chars-v1",
+      "sample_name": "invalid subtype characters",
+      "fixture_slug": "edge_invalid_subtype_chars",
+      "description": "Bracket inside subtype breaks renderer safe-part rules",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.example.edge.badsubtype",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "Evil",
+        "variant": "x",
+        "subtype": "Bank]er"
+      },
+      "expected_issues": ["entity_kind_label_conflict"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-long-package-v1",
+      "sample_name": "very long package name",
+      "fixture_slug": "edge_long_package_name",
+      "description": "Extremely long but syntactically valid package",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.app",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "LongPkg",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": [],
+      "expected_training_eligible": true,
+      "observe_note": "Length not capped in seed rules; connector layer should enforce limits."
+    },
+    {
+      "sample_id": "edge-whitespace-package-v1",
+      "sample_name": "package name with surrounding whitespace",
+      "fixture_slug": "edge_whitespace_package",
+      "description": "Leading/trailing spaces in package_name",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "  com.example.edge.space  ",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "SpacePkg",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["invalid_package_name"],
+      "expected_training_eligible": false
+    },
+    {
+      "sample_id": "edge-null-byte-package-v1",
+      "sample_name": "package with embedded null byte",
+      "fixture_slug": "edge_null_byte_package",
+      "description": "C-style string terminator smuggled into package_name",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.evil\u0000hidden.app",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "NullPkg",
+        "build_ref": "1",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["invalid_package_name"],
+      "expected_training_eligible": false
+    }
+  ]
+}

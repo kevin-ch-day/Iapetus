@@ -103,5 +103,26 @@
     "rough_risk": "medium",
     "common_context": "auto-start components",
     "notes": "Enables startup persistence after boot."
+  },
+  {
+    "permission": "android.permission.POST_NOTIFICATIONS",
+    "category": "notifications",
+    "rough_risk": "low",
+    "common_context": "push and messaging alerts",
+    "notes": "Runtime notification permission on newer Android versions."
+  },
+  {
+    "permission": "android.permission.WAKE_LOCK",
+    "category": "power",
+    "rough_risk": "low",
+    "common_context": "keep CPU awake during background work",
+    "notes": "Common in games and sync; suspicious when paired with hidden services."
+  },
+  {
+    "permission": "android.permission.WRITE_EXTERNAL_STORAGE",
+    "category": "storage",
+    "rough_risk": "medium",
+    "common_context": "legacy file writes and exfil staging",
+    "notes": "Legacy scoped storage writes; review paired with network exfil."
   }
 ]

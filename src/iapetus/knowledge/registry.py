@@ -126,6 +126,8 @@ _LESSONS: tuple[KnowledgeLesson, ...] = (
         ),
         commands=(
             "iapetus learn run --mode smoke --write",
+            "iapetus learn absorb",
+            "iapetus learn explain-token --token android.permission.READ_SMS",
             "iapetus learn list",
             "iapetus dataset shape",
         ),

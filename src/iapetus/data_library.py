@@ -16,6 +16,10 @@ DATA_DIR = Path("data")
 CURATED_DIR = DATA_DIR / "curated"
 RAW_DIR = DATA_DIR / "raw"
 GENERATED_DIR = DATA_DIR / "generated"
+KNOWLEDGE_SUMMARY_PATH = GENERATED_DIR / "knowledge_summary.json"
+TOKEN_VOCABULARY_PATH = GENERATED_DIR / "token_vocabulary.json"
+FIXTURE_COOCCURRENCE_PATH = GENERATED_DIR / "fixture_cooccurrence.json"
+TRAINING_CORPUS_PATH = GENERATED_DIR / "training_corpus.json"
 MANIFESTS_DIR = DATA_DIR / "manifests"
 REFERENCE_RAW_DIR = RAW_DIR / "reference"
 
@@ -44,10 +48,23 @@ class SeedFixtureSample(BaseModel):
     sample_id: str = Field(min_length=1)
     sample_name: str = Field(min_length=1)
     sample_type: str = Field(min_length=1)
+    fixture_slug: str | None = None
+    platform: str | None = None
+    package_name: str | None = None
+    display_name: str | None = None
+    build_ref: str | None = None
+    variant: str | None = None
+    rendered_label: str | None = None
     permissions: list[str] = Field(min_length=1)
     labels: dict[str, Any] = Field(default_factory=dict)
     expected_classification: str | None = None
+    components: list[str] = Field(default_factory=list)
+    intent_filters: list[str] = Field(default_factory=list)
+    manifest_flags: list[str] = Field(default_factory=list)
+    network_strings: list[str] = Field(default_factory=list)
+    code_strings: list[str] = Field(default_factory=list)
     suspicious_indicators: list[str] = Field(default_factory=list)
+    notes: str | None = None
 
 
 def _default_sources() -> list[SourceManifest]:
@@ -292,19 +309,32 @@ def build_feature_vocabulary() -> dict[str, list[str] | dict[str, int] | int]:
         if isinstance(suspicious, str) and suspicious.strip():
             suspicious_vocab.append(suspicious.strip())
 
-    for item in fixtures:
-        sample_type = str(item.get("sample_type", "")).strip().lower()
+    for raw in fixtures:
+        sample = SeedFixtureSample.model_validate(raw)
+        sample_type = str(sample.sample_type).strip().lower()
         if sample_type in {"malware", "malicious"}:
-            classification = item.get("labels", {}).get("subtype")
+            classification = sample.expected_classification or sample.labels.get("subtype")
         else:
-            classification = item.get("labels", {}).get("app_category")
+            classification = sample.expected_classification or sample.labels.get("app_category")
         if isinstance(classification, str) and classification.strip():
             code_vocab.add(classification.strip())
-        for permission in item.get("permissions", []):
-            if isinstance(permission, str) and permission.strip():
+        for permission in sample.permissions:
+            if permission.strip():
                 permission_vocab.add(permission.strip())
-        for indicator in item.get("suspicious_indicators", []):
-            if isinstance(indicator, str) and indicator.strip():
+        for token in (
+            *sample.components,
+            *sample.intent_filters,
+            *sample.manifest_flags,
+            *sample.network_strings,
+            *sample.code_strings,
+        ):
+            if token.strip():
+                if "http://" in token or "https://" in token:
+                    network_vocab.add(token.strip())
+                else:
+                    code_vocab.add(token.strip())
+        for indicator in sample.suspicious_indicators:
+            if indicator.strip():
                 suspicious_vocab.append(indicator.strip())
 
     permission_list = sorted(permission_vocab)
@@ -363,11 +393,27 @@ def validate_seed_payloads() -> tuple[bool, list[str], dict[str, int]]:
     try:
         fixtures = load_fixture_seed()
         for index, item in enumerate(fixtures):
-            if not item.get("labels"):
+            try:
+                sample = SeedFixtureSample.model_validate(item)
+            except ValidationError as exc:
+                issues.append(f"android_fixture_samples_seed.json item {index}: {exc}")
+                continue
+            if not sample.labels:
                 issues.append(f"android_fixture_samples_seed.json item {index}: missing labels")
-            if not item.get("permissions"):
+            if not sample.permissions:
                 issues.append(f"android_fixture_samples_seed.json item {index}: missing permissions")
         counts["fixture_sample_count"] = len(fixtures)
+        try:
+            from iapetus.validation import validate_curated_fixtures_quality
+
+            for quality in validate_curated_fixtures_quality():
+                if not quality.training_eligible:
+                    issues.append(
+                        f"curated fixture {quality.fixture_slug}: not training-eligible "
+                        f"({', '.join(quality.training_blockers)})"
+                    )
+        except Exception as exc:
+            issues.append(f"curated quality probe failed: {exc}")
     except Exception as exc:
         issues.append(str(exc))
 

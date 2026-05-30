@@ -1,0 +1,240 @@
+{
+  "fixture_set": "adversarial_test",
+  "not_training_truth": true,
+  "purpose": "Validation and hardening only. Never mix into normal curated learning by default.",
+  "fixtures": [
+    {
+      "sample_id": "bad-spoofed-windows-v1",
+      "sample_name": "spoofed windows as android",
+      "fixture_slug": "spoofed_windows_as_android",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "C:\\Windows\\System32\\svchost.exe",
+      "file_name": "svchost.exe",
+      "file_extension": "exe",
+      "rendered_label": "AndroidOS:Trojan.FakeWin-a:[Banker]",
+      "permissions": ["android.permission.INTERNET"],
+      "code_strings": ["PE", "MZ", "kernel32.dll", "CreateProcessW"],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "FakeWin",
+        "variant": "a",
+        "subtype": "Banker"
+      },
+      "expected_issues": [
+        "platform_extension_conflict",
+        "windows_artifact_in_android_context",
+        "invalid_package_name"
+      ]
+    },
+    {
+      "sample_id": "bad-normal-malware-label-v1",
+      "sample_name": "normal app with malware label",
+      "fixture_slug": "normal_app_with_malware_label",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.social.fakebook",
+      "display_name": "Fakebook",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.READ_CONTACTS"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "Anubis",
+        "variant": "t",
+        "subtype": "Banker"
+      },
+      "expected_issues": ["entity_kind_label_conflict"]
+    },
+    {
+      "sample_id": "bad-malware-social-label-v1",
+      "sample_name": "malware with social label",
+      "fixture_slug": "malware_with_social_label",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.fake.update.security",
+      "rendered_label": "AndroidOS:Facebook-64543615:[SocialMedia]",
+      "permissions": [
+        "android.permission.READ_SMS",
+        "android.permission.RECEIVE_SMS",
+        "android.permission.SYSTEM_ALERT_WINDOW"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "Facebook",
+        "build_ref": "64543615",
+        "app_category": "SocialMedia"
+      },
+      "expected_issues": ["entity_kind_label_conflict"]
+    },
+    {
+      "sample_id": "bad-impossible-permissions-v1",
+      "sample_name": "impossible permission format",
+      "fixture_slug": "impossible_permission_format",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.example.bad.permissions",
+      "permissions": [
+        "READ_SMS",
+        "android.permission.",
+        "android.permission read sms",
+        "com.fake..permission.BAD",
+        ""
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "BadPerm",
+        "variant": "x",
+        "subtype": "Dropper"
+      },
+      "expected_issues": ["malformed_permission"]
+    },
+    {
+      "sample_id": "bad-contradictory-context-v1",
+      "sample_name": "contradictory static context",
+      "fixture_slug": "contradictory_static_context",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.banking.safe",
+      "display_name": "SafeBank",
+      "expected_classification": "MobileBanking",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.READ_SMS",
+        "android.permission.RECEIVE_SMS",
+        "android.permission.SEND_SMS",
+        "android.permission.SYSTEM_ALERT_WINDOW",
+        "android.permission.BIND_ACCESSIBILITY_SERVICE"
+      ],
+      "suspicious_indicators": [
+        "sms_intercept",
+        "overlay_attack",
+        "accessibility_abuse"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "SafeBank",
+        "build_ref": "10001",
+        "app_category": "MobileBanking"
+      },
+      "expected_issues": ["contradictory_context", "suspicious_overclaim"]
+    },
+    {
+      "sample_id": "bad-unknown-platform-v1",
+      "sample_name": "unknown platform apk like",
+      "fixture_slug": "unknown_platform_apk_like",
+      "sample_type": "normal_app",
+      "platform": "UnknownOS",
+      "file_extension": "apk",
+      "package_name": "com.example.unknown",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "UnknownOS",
+        "app_name": "Unknown",
+        "build_ref": "1",
+        "app_category": "Unknown"
+      },
+      "expected_issues": ["unknown_or_unsupported_platform", "platform_extension_conflict"]
+    },
+    {
+      "sample_id": "bad-label-syntax-v1",
+      "sample_name": "bad label syntax",
+      "fixture_slug": "bad_label_syntax",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.example.bad.labels",
+      "rendered_label_examples": [
+        "AndroidOS:::[Banker]",
+        "AndroidOS:Trojan.Anubis:[Banker]",
+        "AndroidOS:Trojan.Anubis-t:Banker",
+        "AndroidOS:Trojan..Anubis-t:[Banker]",
+        "AndroidOS::Trojan.Anubis-t:[Banker]",
+        "AndroidOS:Facebook:[SocialMedia]",
+        "WindowsOS:Trojan.Anubis-t:[Banker]"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "malware_primary": "Trojan",
+        "family": "Anubis",
+        "variant": "t",
+        "subtype": "Banker"
+      },
+      "expected_issues": ["malformed_label"]
+    },
+    {
+      "sample_id": "bad-benign-overclaim-v1",
+      "sample_name": "suspicious benign overclaim",
+      "fixture_slug": "suspicious_benign_overclaim",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.flashlight",
+      "display_name": "FlashLight",
+      "expected_classification": "Utility",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.READ_SMS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.REQUEST_INSTALL_PACKAGES"
+      ],
+      "code_strings": ["DexClassLoader", "payload.apk"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "FlashLight",
+        "build_ref": "42",
+        "app_category": "Utility"
+      },
+      "expected_issues": ["suspicious_overclaim"]
+    },
+    {
+      "sample_id": "bad-permission-typo-v1",
+      "sample_name": "permission typo otherwise good shape",
+      "fixture_slug": "permission_typo_otherwise_good",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "com.example.social.fakebook",
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.READ_SMSS"
+      ],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "Fakebook",
+        "build_ref": "740001",
+        "app_category": "SocialMedia"
+      },
+      "expected_issues": ["malformed_permission"]
+    },
+    {
+      "sample_id": "bad-invalid-package-v1",
+      "sample_name": "invalid package name casing",
+      "fixture_slug": "invalid_package_name_case",
+      "sample_type": "normal_app",
+      "platform": "AndroidOS",
+      "package_name": "Com.Example.Bad",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {
+        "platform": "AndroidOS",
+        "app_name": "Bad",
+        "build_ref": "1",
+        "app_category": "SocialMedia"
+      },
+      "expected_issues": ["invalid_package_name"]
+    },
+    {
+      "sample_id": "bad-malware-empty-labels-v1",
+      "sample_name": "malware missing label payload",
+      "fixture_slug": "malware_missing_label_payload",
+      "sample_type": "malware",
+      "platform": "AndroidOS",
+      "package_name": "com.evil.emptylabels",
+      "permissions": ["android.permission.INTERNET"],
+      "labels": {},
+      "expected_issues": ["entity_kind_label_conflict"]
+    }
+  ]
+}

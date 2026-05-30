@@ -2,14 +2,52 @@
   {
     "sample_id": "seed-benign-social-v1",
     "sample_name": "benign social app",
+    "fixture_slug": "benign_social_app",
     "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "com.example.social.fakebook",
+    "display_name": "Fakebook",
+    "build_ref": "740001",
+    "expected_classification": "SocialMedia",
     "permissions": [
       "android.permission.INTERNET",
-      "android.permission.ACCESS_NETWORK_STATE"
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.READ_CONTACTS"
     ],
+    "components": [
+      "MainActivity",
+      "ShareActivity",
+      "NotificationService",
+      "MediaProvider"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER",
+      "android.intent.action.SEND"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=false"
+    ],
+    "network_strings": [
+      "https://api.fakebook.example/graphql",
+      "https://cdn.fakebook.example/media"
+    ],
+    "code_strings": [
+      "GraphAPI",
+      "uploadMedia",
+      "contactSync"
+    ],
+    "suspicious_indicators": [
+      "high_permission_surface",
+      "contact_graph_access"
+    ],
+    "notes": "Seed benign social fixture with realistic high-permission social surface.",
     "labels": {
       "platform": "AndroidOS",
-      "app_name": "FriendSphere",
+      "app_name": "Fakebook",
       "build_ref": "740001",
       "app_category": "SocialMedia"
     }
@@ -17,15 +55,47 @@
   {
     "sample_id": "seed-benign-messaging-v1",
     "sample_name": "benign messaging app",
+    "fixture_slug": "benign_messaging_app",
     "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "org.example.securechat",
+    "display_name": "SecureChat",
+    "build_ref": "740002",
+    "expected_classification": "Messaging",
     "permissions": [
       "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.CAMERA",
       "android.permission.RECORD_AUDIO",
-      "android.permission.READ_CONTACTS"
+      "android.permission.POST_NOTIFICATIONS"
     ],
+    "components": [
+      "MainActivity",
+      "MessageService",
+      "PushReceiver"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=false"
+    ],
+    "network_strings": [
+      "https://api.securechat.example/messages"
+    ],
+    "code_strings": [
+      "endToEndEncryption",
+      "messageQueue"
+    ],
+    "suspicious_indicators": [
+      "low_static_risk"
+    ],
+    "notes": "Seed benign messaging fixture with encryption-oriented markers.",
     "labels": {
       "platform": "AndroidOS",
-      "app_name": "TalkFlow",
+      "app_name": "SecureChat",
       "build_ref": "740002",
       "app_category": "Messaging"
     }
@@ -33,16 +103,51 @@
   {
     "sample_id": "seed-benign-shortvideo-v1",
     "sample_name": "benign short video app",
+    "fixture_slug": "benign_short_video_app",
     "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "com.example.video.shortloop",
+    "display_name": "ShortLoop",
+    "build_ref": "740003",
+    "expected_classification": "ShortVideo",
     "permissions": [
       "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
       "android.permission.CAMERA",
       "android.permission.RECORD_AUDIO",
       "android.permission.ACCESS_FINE_LOCATION"
     ],
+    "components": [
+      "MainActivity",
+      "UploadActivity",
+      "FeedService",
+      "NotificationReceiver"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=false"
+    ],
+    "network_strings": [
+      "https://api.shortloop.example/feed",
+      "https://cdn.shortloop.example/video"
+    ],
+    "code_strings": [
+      "videoEncoder",
+      "uploadVideo",
+      "recommendationFeed"
+    ],
+    "suspicious_indicators": [
+      "media_sensor_access",
+      "location_personalization"
+    ],
+    "notes": "Seed benign short-video fixture with media and location personalization.",
     "labels": {
       "platform": "AndroidOS",
-      "app_name": "ClipNow",
+      "app_name": "ShortLoop",
       "build_ref": "740003",
       "app_category": "ShortVideo"
     }
@@ -50,13 +155,54 @@
   {
     "sample_id": "seed-malware-banker-v1",
     "sample_name": "malware banker",
+    "fixture_slug": "malware_banker",
     "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.fake.update.security",
+    "display_name": "Security Update",
+    "variant": "t",
+    "expected_classification": "Banker",
     "permissions": [
       "android.permission.INTERNET",
       "android.permission.READ_SMS",
       "android.permission.RECEIVE_SMS",
       "android.permission.ACCESS_NETWORK_STATE"
     ],
+    "components": [
+      "MainActivity",
+      "BootReceiver",
+      "SmsReceiver",
+      "OverlayService",
+      "AccessibilityService"
+    ],
+    "intent_filters": [
+      "android.intent.action.BOOT_COMPLETED",
+      "android.provider.Telephony.SMS_RECEIVED"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=true",
+      "allowBackup=true"
+    ],
+    "network_strings": [
+      "http://bank-update.example/c2/checkin",
+      "/api/overlay/config"
+    ],
+    "code_strings": [
+      "TelephonyManager",
+      "SmsManager",
+      "AccessibilityService",
+      "SYSTEM_ALERT_WINDOW",
+      "overlay",
+      "injectHTML"
+    ],
+    "suspicious_indicators": [
+      "sms_intercept",
+      "overlay_attack",
+      "boot_persistence",
+      "accessibility_abuse",
+      "cleartext_c2"
+    ],
+    "notes": "Seed banker-like malware fixture combining SMS, persistence, and overlay markers.",
     "labels": {
       "platform": "AndroidOS",
       "malware_primary": "Trojan",
@@ -68,7 +214,13 @@
   {
     "sample_id": "seed-malware-rat-v1",
     "sample_name": "malware RAT",
+    "fixture_slug": "malware_rat",
     "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.android.system.helper",
+    "display_name": "System Helper",
+    "variant": "x",
+    "expected_classification": "RAT",
     "permissions": [
       "android.permission.INTERNET",
       "android.permission.ACCESS_FINE_LOCATION",
@@ -76,6 +228,37 @@
       "android.permission.RECORD_AUDIO",
       "android.permission.BIND_ACCESSIBILITY_SERVICE"
     ],
+    "components": [
+      "MainActivity",
+      "CommandService",
+      "BootReceiver",
+      "LocationService"
+    ],
+    "intent_filters": [
+      "android.intent.action.BOOT_COMPLETED"
+    ],
+    "manifest_flags": [
+      "allowBackup=true"
+    ],
+    "network_strings": [
+      "https://control.example/ws",
+      "/device/register",
+      "/command/poll"
+    ],
+    "code_strings": [
+      "cameraCapture",
+      "recordAudio",
+      "getLastKnownLocation",
+      "commandLoop",
+      "WebSocket"
+    ],
+    "suspicious_indicators": [
+      "remote_control",
+      "surveillance_capability",
+      "boot_persistence",
+      "location_tracking"
+    ],
+    "notes": "Seed RAT-like malware fixture with command-loop and surveillance markers.",
     "labels": {
       "platform": "AndroidOS",
       "malware_primary": "Backdoor",
@@ -87,18 +270,358 @@
   {
     "sample_id": "seed-malware-dropper-v1",
     "sample_name": "malware dropper",
+    "fixture_slug": "malware_dropper",
     "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.example.flash.update",
+    "display_name": "Flash Update",
+    "variant": "a",
+    "expected_classification": "Dropper",
     "permissions": [
       "android.permission.REQUEST_INSTALL_PACKAGES",
+      "android.permission.QUERY_ALL_PACKAGES",
       "android.permission.SYSTEM_ALERT_WINDOW",
       "android.permission.INTERNET"
     ],
+    "components": [
+      "MainActivity",
+      "UpdateService",
+      "DownloadReceiver"
+    ],
+    "intent_filters": [
+      "android.intent.action.DOWNLOAD_COMPLETE"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=true"
+    ],
+    "network_strings": [
+      "https://cdn.example-update.com/payload.apk"
+    ],
+    "code_strings": [
+      "DexClassLoader",
+      "downloadPayload",
+      "installPackage",
+      "updateRequired"
+    ],
+    "suspicious_indicators": [
+      "dynamic_code_loading",
+      "secondary_payload",
+      "package_install_request"
+    ],
+    "notes": "Seed dropper fixture with dynamic loading and secondary payload markers.",
     "labels": {
       "platform": "AndroidOS",
       "malware_primary": "Trojan",
       "family": "SharkBot",
       "variant": "a",
       "subtype": "Dropper"
+    }
+  },
+  {
+    "sample_id": "seed-benign-utility-v1",
+    "sample_name": "benign utility flashlight",
+    "fixture_slug": "benign_utility_flashlight",
+    "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "com.example.tools.flashbeam",
+    "display_name": "FlashBeam",
+    "build_ref": "740004",
+    "expected_classification": "Utility",
+    "permissions": [
+      "android.permission.CAMERA",
+      "android.permission.INTERNET"
+    ],
+    "components": [
+      "MainActivity",
+      "TorchService"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=false"
+    ],
+    "network_strings": [
+      "https://analytics.flashbeam.example/events"
+    ],
+    "code_strings": [
+      "toggleTorch",
+      "CameraManager"
+    ],
+    "suspicious_indicators": [
+      "low_static_risk"
+    ],
+    "notes": "Minimal-permission utility fixture; camera aligns with flashlight function.",
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "FlashBeam",
+      "build_ref": "740004",
+      "app_category": "Utility"
+    }
+  },
+  {
+    "sample_id": "seed-benign-banking-v1",
+    "sample_name": "benign mobile banking",
+    "fixture_slug": "benign_mobile_banking",
+    "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "com.example.bank.trustwallet",
+    "display_name": "TrustWallet",
+    "build_ref": "740005",
+    "expected_classification": "MobileBanking",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.READ_PHONE_STATE",
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "components": [
+      "LoginActivity",
+      "AccountListActivity",
+      "TransferService",
+      "SecureSessionProvider"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=false",
+      "networkSecurityConfig=banking_tls_only"
+    ],
+    "network_strings": [
+      "https://api.trustwallet.example/v2/accounts",
+      "https://api.trustwallet.example/v2/transfers"
+    ],
+    "code_strings": [
+      "pinEntry",
+      "sessionToken",
+      "certificatePinning"
+    ],
+    "suspicious_indicators": [
+      "tls_pinned_banking_api",
+      "device_binding_phone_state"
+    ],
+    "notes": "Legitimate banking fixture: TLS APIs and device binding without SMS/overlay abuse markers.",
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "TrustWallet",
+      "build_ref": "740005",
+      "app_category": "MobileBanking"
+    }
+  },
+  {
+    "sample_id": "seed-benign-game-v1",
+    "sample_name": "benign puzzle game",
+    "fixture_slug": "benign_puzzle_game",
+    "sample_type": "normal_app",
+    "platform": "AndroidOS",
+    "package_name": "com.example.games.blockpop",
+    "display_name": "BlockPop",
+    "build_ref": "740006",
+    "expected_classification": "Game",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_NETWORK_STATE",
+      "android.permission.WAKE_LOCK",
+      "android.permission.POST_NOTIFICATIONS"
+    ],
+    "components": [
+      "MainActivity",
+      "GameEngineService",
+      "LeaderboardActivity"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN",
+      "android.intent.category.LAUNCHER"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=false",
+      "allowBackup=true"
+    ],
+    "network_strings": [
+      "https://api.blockpop.example/scores",
+      "https://cdn.blockpop.example/levels"
+    ],
+    "code_strings": [
+      "gameLoop",
+      "saveProgress",
+      "loadLeaderboard"
+    ],
+    "suspicious_indicators": [
+      "background_wake_for_sync"
+    ],
+    "notes": "Casual game fixture with wake lock for background sync, no surveillance or install abuse.",
+    "labels": {
+      "platform": "AndroidOS",
+      "app_name": "BlockPop",
+      "build_ref": "740006",
+      "app_category": "Game"
+    }
+  },
+  {
+    "sample_id": "seed-malware-spyware-v1",
+    "sample_name": "malware spyware",
+    "fixture_slug": "malware_spyware",
+    "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.system.cache.optimizer",
+    "display_name": "Cache Optimizer",
+    "variant": "s",
+    "expected_classification": "Spyware",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.READ_CONTACTS",
+      "android.permission.READ_SMS",
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "components": [
+      "MainActivity",
+      "ExfilService",
+      "ContactSyncWorker"
+    ],
+    "intent_filters": [
+      "android.intent.action.MAIN"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=true",
+      "allowBackup=true"
+    ],
+    "network_strings": [
+      "http://collect.example/upload/contacts",
+      "http://collect.example/upload/sms"
+    ],
+    "code_strings": [
+      "readContacts",
+      "readSmsInbox",
+      "zipArchive",
+      "uploadBatch"
+    ],
+    "suspicious_indicators": [
+      "contact_exfil",
+      "sms_exfil",
+      "cleartext_c2",
+      "staged_file_upload"
+    ],
+    "notes": "Spyware fixture: PII harvest and cleartext exfil without user-facing justification.",
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Spyware",
+      "family": "Agent",
+      "variant": "s",
+      "subtype": "Spyware"
+    }
+  },
+  {
+    "sample_id": "seed-malware-adware-v1",
+    "sample_name": "malware adware fraud",
+    "fixture_slug": "malware_adware_fraud",
+    "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.free.rewards.boost",
+    "display_name": "Reward Boost",
+    "variant": "f",
+    "expected_classification": "Adware",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.SYSTEM_ALERT_WINDOW",
+      "android.permission.RECEIVE_BOOT_COMPLETED",
+      "android.permission.ACCESS_NETWORK_STATE"
+    ],
+    "components": [
+      "MainActivity",
+      "AdOverlayService",
+      "BootReceiver",
+      "ClickInjectionService"
+    ],
+    "intent_filters": [
+      "android.intent.action.BOOT_COMPLETED",
+      "android.intent.action.MAIN"
+    ],
+    "manifest_flags": [
+      "usesCleartextTraffic=true"
+    ],
+    "network_strings": [
+      "http://ads.example/click/fraud",
+      "http://ads.example/config/overlay"
+    ],
+    "code_strings": [
+      "injectClick",
+      "showFullScreenAd",
+      "disableBackButton"
+    ],
+    "suspicious_indicators": [
+      "overlay_attack",
+      "boot_persistence",
+      "click_fraud",
+      "ad_overlay_abuse"
+    ],
+    "notes": "Adware/fraud fixture: overlay + boot persistence + click injection patterns.",
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Adware",
+      "family": "Clicker",
+      "variant": "f",
+      "subtype": "Adware"
+    }
+  },
+  {
+    "sample_id": "seed-malware-stalkerware-v1",
+    "sample_name": "malware stalkerware",
+    "fixture_slug": "malware_stalkerware",
+    "sample_type": "malware",
+    "platform": "AndroidOS",
+    "package_name": "com.partner.track.safe",
+    "display_name": "Partner Safe",
+    "variant": "k",
+    "expected_classification": "Stalkerware",
+    "permissions": [
+      "android.permission.INTERNET",
+      "android.permission.ACCESS_FINE_LOCATION",
+      "android.permission.CAMERA",
+      "android.permission.RECORD_AUDIO",
+      "android.permission.BIND_ACCESSIBILITY_SERVICE"
+    ],
+    "components": [
+      "MainActivity",
+      "LocationTrackerService",
+      "MicCaptureService",
+      "StalkerAccessibilityService"
+    ],
+    "intent_filters": [
+      "android.intent.action.BOOT_COMPLETED"
+    ],
+    "manifest_flags": [
+      "allowBackup=true"
+    ],
+    "network_strings": [
+      "https://track.partner.example/location",
+      "https://track.partner.example/audio/upload"
+    ],
+    "code_strings": [
+      "getLastKnownLocation",
+      "recordAudio",
+      "AccessibilityService",
+      "hideLauncherIcon"
+    ],
+    "suspicious_indicators": [
+      "surveillance_capability",
+      "location_tracking",
+      "accessibility_abuse",
+      "boot_persistence",
+      "hidden_launcher"
+    ],
+    "notes": "Stalkerware fixture: covert surveillance stack with accessibility and hidden launcher.",
+    "labels": {
+      "platform": "AndroidOS",
+      "malware_primary": "Monitor",
+      "family": "TrackMe",
+      "variant": "k",
+      "subtype": "Stalkerware"
     }
   }
 ]

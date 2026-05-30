@@ -109,8 +109,10 @@ def test_status_command_reports_mode_and_counts(monkeypatch: pytest.MonkeyPatch,
 def test_dataset_shape_preview_contains_groups() -> None:
     result = CliRunner().invoke(app, ["dataset", "shape"])
     assert result.exit_code == 0
-    assert "- entities" in result.stdout
-    assert "- labels" in result.stdout
+    assert "entity_features" in result.stdout
+    assert "malware_banker" in result.stdout
+    assert "has_sms_permission" in result.stdout
+    assert "labeled_entities" in result.stdout
     assert "- permission observations" in result.stdout
     assert "- static features" in result.stdout
     assert "- dynamic windows" in result.stdout
@@ -205,6 +207,31 @@ def test_learn_run_smoke_curated_write_creates_feature_artifacts(tmp_path: Path)
     run_dir = run_dirs[0]
     assert (run_dir / "feature_vocabulary.json").is_file()
     assert (run_dir / "token_summary.json").is_file()
+    assert (run_dir / "entities.json").is_file()
+    assert (run_dir / "labeled_entities.json").is_file()
+    assert (run_dir / "entity_features.json").is_file()
+    assert (run_dir / "entity_token_groups.json").is_file()
+    assert (run_dir / "training_corpus.json").is_file()
+    assert (run_dir / "training_features.json").is_file()
+
+    corpus = json.loads((run_dir / "training_corpus.json").read_text(encoding="utf-8"))
+    assert corpus["training_example_count"] == 12
+
+    entities = json.loads((run_dir / "entities.json").read_text(encoding="utf-8"))
+    banker = next(row for row in entities if row["fixture_slug"] == "malware_banker")
+    assert banker["package_name"] == "com.fake.update.security"
+    assert banker["entity_kind"] == "malware"
+
+    features = json.loads((run_dir / "entity_features.json").read_text(encoding="utf-8"))
+    banker_features = next(row for row in features if row["fixture_slug"] == "malware_banker")
+    assert banker_features["has_sms_permission"] is True
+    assert banker_features["has_boot_persistence"] is True
+    assert banker_features["training_eligible"] is True
+
+    result_payload = json.loads((run_dir / "learning_result.json").read_text(encoding="utf-8"))
+    assert result_payload["use_curated_fixtures"] is True
+    assert result_payload["training_example_count"] == 12
+    assert result_payload["average_training_quality_score"] >= 80.0
 
     vocabulary = json.loads((run_dir / "feature_vocabulary.json").read_text(encoding="utf-8"))
     token_summary = json.loads((run_dir / "token_summary.json").read_text(encoding="utf-8"))
