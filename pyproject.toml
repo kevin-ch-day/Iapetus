@@ -1,0 +1,26 @@
+[project]
+name = "iapetus"
+version = "0.0.1"
+description = "Fedora-only Android security deep-learning platform kernel"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "typer>=0.12",
+    "rich>=13.0",
+    "pydantic>=2.0",
+    "pytest>=8.0",
+]
+
+[project.scripts]
+iapetus = "iapetus.cli:app"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"

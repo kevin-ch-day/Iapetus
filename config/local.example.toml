@@ -1,0 +1,7 @@
+[kernel]
+name = "iapetus-seed"
+target_os = "fedora"
+description = "Iapetus local seed configuration"
+
+[labels]
+platform = "AndroidOS"
