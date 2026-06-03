@@ -6,6 +6,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
+from iapetus.contracts.learning import STATIC_MLP_V2_MODE, normalize_learning_mode_alias
 from iapetus.learning.deep.training_feature_encoding import STATIC_FEATURE_NAMES, prepare_training_batch
 from iapetus.learning.deep.static_mlp_inference import evaluate_saved_run, load_model_bundle, predict_fixture
 from iapetus.learning.deep.static_mlp_trainer import train_static_mlp
@@ -41,7 +42,7 @@ def test_build_static_v1_result_passes() -> None:
     result, report, entity_model, malware_model, benign_model = build_static_v1_result(
         backend="pure_python"
     )
-    assert result.mode == "static_v1"
+    assert result.mode == STATIC_MLP_V2_MODE
     assert result.status in {"PASS", "WARN"}
     assert report["train_accuracy"] >= 0.75
     assert report["classification_train_accuracy"] >= 0.75
@@ -67,6 +68,11 @@ def test_write_static_v1_artifacts(tmp_path: Path) -> None:
     assert (run_dir / "normalization.json").is_file()
     assert (run_dir / "malware_classification_weights.json").is_file()
     assert (run_dir / "benign_classification_weights.json").is_file()
+    artifact_manifest = json.loads((run_dir / "artifact_manifest.json").read_text(encoding="utf-8"))
+    artifact_paths = {item["path"] for item in artifact_manifest["artifacts"]}
+    assert "learning_result.json" in artifact_paths
+    assert "manifest.json" in artifact_paths
+    assert "training_metrics.json" in artifact_paths
     metrics = json.loads((run_dir / "training_metrics.json").read_text(encoding="utf-8"))
     assert metrics["loocv"]["accuracy"] >= 0.75
     assert metrics["classification_train_accuracy"] >= 0.75
@@ -158,3 +164,8 @@ def test_learn_run_static_v1_mode(tmp_path: Path, monkeypatch) -> None:
     assert len(run_dirs) == 1
     assert (run_dirs[0] / "normalization.json").is_file()
     assert (run_dirs[0] / "malware_classification_weights.json").is_file()
+
+
+def test_static_mode_aliases_normalize_to_canonical_internal_mode() -> None:
+    assert normalize_learning_mode_alias("static-v1") == STATIC_MLP_V2_MODE
+    assert normalize_learning_mode_alias("static-v2") == STATIC_MLP_V2_MODE

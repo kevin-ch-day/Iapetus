@@ -53,6 +53,36 @@ from .synthetic_android_samples import (
     list_fake_topics,
     get_dataset_row_count,
 )
+from .import_contract_loaders import (
+    IMPORT_CONTRACT_SPECS,
+    ImportContractValidationSummary,
+    import_contracts_dir,
+    load_import_contract_file,
+    validate_all_import_contract_files,
+    validate_import_contract_file,
+)
+from .import_contract_models import (
+    AndroidConceptLesson,
+    AttackMobileSeedMapping,
+    BenignAppArchetype,
+    GovernedImportContractRecord,
+    MalwareTypePattern,
+    PermissionAuthorityFact,
+    PermissionPatternExample,
+)
+from .type_training_corpus import (
+    build_type_training_corpus,
+    preview_training_seed_summary,
+    write_type_training_corpus,
+)
+from .knowledge_eval_loaders import (
+    KNOWLEDGE_EVAL_FILE_NAME,
+    AndroidKnowledgeEvalSummary,
+    evaluate_android_knowledge,
+    knowledge_eval_file_path,
+    load_knowledge_eval_questions,
+)
+from .knowledge_eval_models import AndroidKnowledgeEvalQuestion, AndroidKnowledgeEvalResult
 
 __all__ = [
     "KnowledgeConcept",
@@ -98,6 +128,29 @@ __all__ = [
     "get_fake_data",
     "list_fake_topics",
     "get_dataset_row_count",
+    "GovernedImportContractRecord",
+    "PermissionAuthorityFact",
+    "AndroidConceptLesson",
+    "MalwareTypePattern",
+    "BenignAppArchetype",
+    "PermissionPatternExample",
+    "AttackMobileSeedMapping",
+    "IMPORT_CONTRACT_SPECS",
+    "ImportContractValidationSummary",
+    "import_contracts_dir",
+    "load_import_contract_file",
+    "validate_import_contract_file",
+    "validate_all_import_contract_files",
+    "build_type_training_corpus",
+    "preview_training_seed_summary",
+    "write_type_training_corpus",
+    "AndroidKnowledgeEvalQuestion",
+    "AndroidKnowledgeEvalResult",
+    "AndroidKnowledgeEvalSummary",
+    "KNOWLEDGE_EVAL_FILE_NAME",
+    "knowledge_eval_file_path",
+    "load_knowledge_eval_questions",
+    "evaluate_android_knowledge",
 ]
 
 

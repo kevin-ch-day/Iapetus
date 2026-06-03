@@ -5,6 +5,7 @@ from pathlib import Path
 from typer.testing import CliRunner
 
 from iapetus.cli import app
+from iapetus.contracts.learning import SNAPSHOT_MANIFEST_SCHEMA_NAME, SNAPSHOT_MANIFEST_SCHEMA_VERSION
 from iapetus.labels.malware_label_text_renderer import render_malware_label, render_normal_app_label
 from iapetus.snapshots.demo_snapshot_builder import build_demo_snapshot, demo_fixtures
 import pytest
@@ -40,6 +41,8 @@ def test_demo_snapshot_manifest_entity_count() -> None:
     snapshot = build_demo_snapshot()
     assert snapshot.manifest.entity_count == 6
     assert snapshot.manifest.name == "m1-demo-snapshot"
+    assert snapshot.manifest.schema_name == SNAPSHOT_MANIFEST_SCHEMA_NAME
+    assert snapshot.manifest.schema_version == SNAPSHOT_MANIFEST_SCHEMA_VERSION
 
 
 def test_snapshot_demo_write_flag(tmp_path: Path) -> None:

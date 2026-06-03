@@ -7,6 +7,7 @@ from pathlib import Path
 
 import typer
 
+from iapetus.contracts.learning import STATIC_MLP_V2_MODE, normalize_learning_mode_alias
 from iapetus.learning.curated_learning_artifacts import (
     write_curated_learning_run_artifacts,
     write_curated_smoke_supplements,
@@ -20,7 +21,7 @@ from iapetus.learning import (
 )
 from iapetus.learning.deep.static_mlp_inference import evaluate_saved_run, load_model_bundle, predict_fixture
 from iapetus.learning.deep.static_mlp_trainer import torch_available
-from iapetus.learning.learning_run_artifacts import artifact_presence, expected_artifacts_for_mode
+from iapetus.learning.learning_run_artifacts import artifact_presence, expected_artifacts_for_mode, write_artifact_manifest
 from iapetus.learning.static_mlp_training_pipeline import build_static_v1_result, write_static_v1_artifacts
 from iapetus.database import list_indexed_runs
 from iapetus.validation import (
@@ -143,6 +144,7 @@ def _run_static_v1_learning(
                 benign_classification_model=benign_class_model,
             )
             write_curated_learning_run_artifacts(run_dir, kind="static_mlp")
+            write_artifact_manifest(run_dir, run_id=result.run_id)
         except OSError as exc:
             console.print(f"[red]Could not write learning artifacts: {exc}[/red]")
             raise typer.Exit(code=1)
@@ -241,8 +243,8 @@ def _run_learning_run(
     include_bad_data: bool = False,
     backend: str | None = None,
 ) -> None:
-    normalized_mode = mode.strip().lower().replace("_", "-")
-    if normalized_mode in {"static-v1", "static-v2"}:
+    normalized_mode = normalize_learning_mode_alias(mode)
+    if normalized_mode == STATIC_MLP_V2_MODE:
         if not use_curated:
             console.print("[red]static-v1/static-v2 mode requires --use-curated.[/red]")
             raise typer.Exit(code=1)
@@ -297,6 +299,7 @@ def _run_learning_run(
                 )
             elif use_curated:
                 write_curated_smoke_supplements(run_dir)
+            write_artifact_manifest(run_dir, run_id=result.run_id)
         except (OSError, IOError) as exc:
             console.print(f"[red]Could not write learning artifacts: {exc}[/red]")
             raise typer.Exit(code=1)

@@ -36,6 +36,7 @@ def _bootstrap_paths(overrides: dict[str, Path] | None = None) -> dict[str, Path
     return {
         "DATA_DIR": data_dir,
         "CURATED_DIR": data_dir / "curated",
+        "IMPORT_CONTRACTS_DIR": data_dir / "import_contracts",
         "RAW_DIR": data_dir / "raw",
         "GENERATED_DIR": generated_dir,
         "LEARNING_INDEX_DB_PATH": learning_index_db_path,
@@ -70,6 +71,7 @@ _assign_module_paths(_bootstrap_paths())
 # Populated by _assign_module_paths; declared for type checkers and ``from iapetus.project_filesystem_paths import …``.
 DATA_DIR: Path
 CURATED_DIR: Path
+IMPORT_CONTRACTS_DIR: Path
 RAW_DIR: Path
 GENERATED_DIR: Path
 LEARNING_INDEX_DB_PATH: Path

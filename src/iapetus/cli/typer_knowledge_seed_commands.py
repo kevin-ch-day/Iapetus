@@ -5,8 +5,12 @@ import typer
 
 from iapetus.knowledge import (
     ArtifactClassifier,
+    IMPORT_CONTRACT_SPECS,
+    KNOWLEDGE_EVAL_FILE_NAME,
     apk_anatomy_lines,
+    build_type_training_corpus,
     concept_summary,
+    evaluate_android_knowledge,
     fake_data_lines,
     find_matching_concepts,
     find_matching_lessons,
@@ -16,6 +20,9 @@ from iapetus.knowledge import (
     list_fake_topics,
     list_lesson_ids,
     print_concepts,
+    preview_training_seed_summary,
+    validate_all_import_contract_files,
+    write_type_training_corpus,
 )
 
 from iapetus.cli.cli_console_and_path_helpers import console
@@ -120,6 +127,92 @@ def _run_knowledge_classify(path: str) -> None:
     )
 
 
+def _run_validate_import_contracts() -> None:
+    console.print("[bold]Import contract validation[/bold]")
+    summaries = validate_all_import_contract_files()
+    for summary in summaries:
+        console.print(f"File           : {summary.file_name}")
+        console.print(f"Row count      : {summary.row_count}")
+        console.print(f"Valid count    : {summary.valid_count}")
+        console.print(f"Invalid count  : {summary.invalid_count}")
+        console.print(f"Record types   : {', '.join(summary.record_types_found) or 'none'}")
+        console.print(f"Training count : {summary.training_eligible_count}")
+        console.print(f"Training cand. : {summary.training_candidate_count}")
+        console.print(f"Training appr. : {summary.training_approved_count}")
+        console.print(f"Teaching only  : {summary.teaching_only_count}")
+        console.print(f"Explanation only: {summary.explanation_only_count}")
+        console.print(f"Validation only: {summary.validation_only_count}")
+        if summary.synthetic_heavy:
+            console.print("[yellow]Warning       : synthetic-heavy data[/yellow]")
+        for issue in summary.issues:
+            console.print(f"[red]Issue         : row {issue.row_number} - {issue.message}[/red]")
+        console.print("")
+
+
+def _run_preview_training_seeds() -> None:
+    summary = preview_training_seed_summary()
+    console.print("[bold]Training Seed Preview[/bold]")
+    console.print(f"Permission facts          : {summary['permission_fact_count']}")
+    console.print(f"Trainable permission facts: {summary['training_candidate_permission_facts']}")
+    console.print(f"Malware patterns          : {summary['malware_type_pattern_count']}")
+    console.print(f"Trainable malware patterns: {summary['trainable_malware_type_patterns']}")
+    console.print(f"Benign archetypes         : {summary['benign_archetype_count']}")
+    console.print(f"Trainable benign archetypes: {summary['trainable_benign_archetypes']}")
+    console.print(f"Contrast examples         : {summary['contrast_example_count']}")
+    console.print(f"Contrast teaching-only    : {summary['contrast_teaching_only_count']}")
+    console.print(f"Contrast explanation-only : {summary['contrast_explanation_only_count']}")
+
+
+def _run_build_type_corpus(write: bool = False) -> None:
+    corpus = build_type_training_corpus()
+    console.print("[bold]Type Training Corpus[/bold]")
+    console.print(f"Corpus name   : {corpus['corpus_name']}")
+    console.print(f"Examples      : {corpus['example_count']}")
+    console.print(f"Authority facts: {corpus['authority_fact_count']}")
+    console.print(f"Contrast rows : {corpus['contrast_example_count']}")
+    for label, count in sorted(corpus["class_counts"].items()):
+        console.print(f"  - {label}: {count}")
+    for warning in corpus["warnings"]:
+        console.print(f"[yellow]Warning: {warning}[/yellow]")
+    if write:
+        path = write_type_training_corpus()
+        console.print(f"[green]Wrote type corpus: {path}[/green]")
+
+
+def _run_knowledge_eval() -> None:
+    summary = evaluate_android_knowledge()
+    console.print("[bold]Android Knowledge Eval[/bold]")
+    console.print(f"Benchmark file : {KNOWLEDGE_EVAL_FILE_NAME}")
+    console.print(f"Total questions: {summary.total_questions}")
+    console.print(f"Covered        : {summary.covered_count}")
+    console.print(f"Partial        : {summary.partial_count}")
+    console.print(f"Gaps           : {summary.gap_count}")
+    console.print("Gaps by topic  :")
+    if summary.gaps_by_topic:
+        for topic, count in summary.gaps_by_topic.items():
+            console.print(f"  - {topic}: {count}")
+    else:
+        console.print("  - none")
+    console.print("Gaps by difficulty:")
+    if summary.gaps_by_difficulty:
+        for difficulty, count in summary.gaps_by_difficulty.items():
+            console.print(f"  - {difficulty}: {count}")
+    else:
+        console.print("  - none")
+    console.print("Trick questions not fully covered:")
+    if summary.trick_questions_not_fully_covered:
+        for result in summary.trick_questions_not_fully_covered:
+            console.print(f"  - {result.question_id} ({result.status})")
+    else:
+        console.print("  - none")
+    console.print("Recommended next seed topics:")
+    if summary.recommended_next_seed_topics:
+        for topic in summary.recommended_next_seed_topics:
+            console.print(f"  - {topic}")
+    else:
+        console.print("  - none")
+
+
 @knowledge_app.command("concepts")
 def knowledge_concepts() -> None:
     """List built-in knowledge concept IDs."""
@@ -154,3 +247,29 @@ def knowledge_teach(topic: str | None = typer.Argument(None, help="Optional less
 def knowledge_data(topic: str | None = typer.Argument(None, help="Optional synthetic data topic")) -> None:
     """Show seed synthetic Android data used for learning."""
     _run_knowledge_data(topic=topic)
+
+
+@knowledge_app.command("validate-import-contracts")
+def knowledge_validate_import_contracts() -> None:
+    """Validate Windows-native Android security import contract JSONL files."""
+    _run_validate_import_contracts()
+
+
+@knowledge_app.command("preview-training-seeds")
+def knowledge_preview_training_seeds() -> None:
+    """Preview governed teaching/training seed counts for type-oriented learning."""
+    _run_preview_training_seeds()
+
+
+@knowledge_app.command("build-type-corpus")
+def knowledge_build_type_corpus(
+    write: bool = typer.Option(False, "--write", help="Write data/generated/type_training_corpus.json."),
+) -> None:
+    """Build a first type-oriented corpus from governed Android security import contracts."""
+    _run_build_type_corpus(write=write)
+
+
+@knowledge_app.command("eval")
+def knowledge_eval() -> None:
+    """Evaluate how well the current Android teaching corpus covers benchmark questions."""
+    _run_knowledge_eval()

@@ -3,7 +3,10 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
+
+from iapetus.contracts.learning import STATIC_MLP_V2_MODE
 from iapetus.curated_fixture_analysis import generated_summary_paths
+from iapetus.learning.learning_run_artifacts import write_artifact_manifest
 from iapetus.learning import LearningRunManifest, LearningRunResult, generate_run_id
 from iapetus.learning.deep.static_mlp_trainer import BackendName, train_static_mlp, write_training_artifacts
 from iapetus.learning.quality_gated_training_corpus import build_training_corpus
@@ -35,7 +38,7 @@ def build_static_v1_result(
     result = LearningRunResult(
         run_id=run_id,
         created_at=created_at,
-        mode="static_v1",
+        mode=STATIC_MLP_V2_MODE,
         dataset_name="curated seed fixtures (static MLP v2)",
         entity_count=corpus["training_example_count"],
         malware_count=malware_count,
@@ -89,3 +92,4 @@ def write_static_v1_artifacts(
         malware_classification_model=malware_classification_model,
         benign_classification_model=benign_classification_model,
     )
+    write_artifact_manifest(run_dir, run_id=result.run_id)

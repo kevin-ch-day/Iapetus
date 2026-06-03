@@ -7,7 +7,16 @@ import pytest
 from typer.testing import CliRunner
 
 from iapetus.cli import app
+from iapetus.contracts.learning import (
+    LEARNING_ARTIFACT_MANIFEST_SCHEMA_NAME,
+    LEARNING_ARTIFACT_MANIFEST_SCHEMA_VERSION,
+    LEARNING_RUN_MANIFEST_SCHEMA_NAME,
+    LEARNING_RUN_MANIFEST_SCHEMA_VERSION,
+    LEARNING_RUN_RESULT_SCHEMA_NAME,
+    LEARNING_RUN_RESULT_SCHEMA_VERSION,
+)
 from iapetus.learning import build_smoke_result, write_learning_artifacts
+from iapetus.learning.learning_result_reader import read_learning_result_file
 from iapetus.curated_seed_library_exports import build_feature_vocabulary, build_token_summary
 
 
@@ -31,12 +40,24 @@ def test_learn_run_smoke_write_creates_artifacts(tmp_path: Path) -> None:
     assert len(run_dirs) == 1
 
     payload = json.loads((run_dirs[0] / "learning_result.json").read_text(encoding="utf-8"))
+    assert payload["schema_name"] == LEARNING_RUN_RESULT_SCHEMA_NAME
+    assert payload["schema_version"] == LEARNING_RUN_RESULT_SCHEMA_VERSION
     assert payload["mode"] == "smoke"
     assert payload["dataset_name"] == "demo fixtures"
     assert payload["status"] == "PASS"
     assert payload["entity_count"] == 6
     assert (run_dirs[0] / "manifest.json").exists()
     assert (run_dirs[0] / "labels.json").exists()
+    artifact_manifest = json.loads((run_dirs[0] / "artifact_manifest.json").read_text(encoding="utf-8"))
+    assert artifact_manifest["schema_name"] == LEARNING_ARTIFACT_MANIFEST_SCHEMA_NAME
+    assert artifact_manifest["schema_version"] == LEARNING_ARTIFACT_MANIFEST_SCHEMA_VERSION
+    assert artifact_manifest["run_id"] == payload["run_id"]
+    artifact_paths = {item["path"] for item in artifact_manifest["artifacts"]}
+    assert "learning_result.json" in artifact_paths
+    assert "manifest.json" in artifact_paths
+    manifest = json.loads((run_dirs[0] / "manifest.json").read_text(encoding="utf-8"))
+    assert manifest["schema_name"] == LEARNING_RUN_MANIFEST_SCHEMA_NAME
+    assert manifest["schema_version"] == LEARNING_RUN_MANIFEST_SCHEMA_VERSION
 
 
 def test_learn_list_no_runs(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -213,6 +234,10 @@ def test_learn_run_smoke_curated_write_creates_feature_artifacts(tmp_path: Path)
     assert (run_dir / "entity_token_groups.json").is_file()
     assert (run_dir / "training_corpus.json").is_file()
     assert (run_dir / "training_features.json").is_file()
+    artifact_manifest = json.loads((run_dir / "artifact_manifest.json").read_text(encoding="utf-8"))
+    artifact_paths = {item["path"] for item in artifact_manifest["artifacts"]}
+    assert "entity_features.json" in artifact_paths
+    assert "feature_vocabulary.json" in artifact_paths
 
     corpus = json.loads((run_dir / "training_corpus.json").read_text(encoding="utf-8"))
     assert corpus["training_example_count"] == 12
@@ -238,3 +263,36 @@ def test_learn_run_smoke_curated_write_creates_feature_artifacts(tmp_path: Path)
     assert "permissions" in vocabulary
     assert "suspicious_indicators" in vocabulary
     assert "fixture_samples_by_entity_kind" in token_summary
+
+
+def test_legacy_learning_result_without_schema_fields_still_parses(tmp_path: Path) -> None:
+    path = tmp_path / "learning_result.json"
+    path.write_text(
+        json.dumps(
+            {
+                "run_id": "run-legacy",
+                "created_at": "2026-06-02T00:00:00+00:00",
+                "mode": "static_v1",
+                "dataset_name": "legacy curated fixtures",
+                "entity_count": 12,
+                "malware_count": 6,
+                "normal_app_count": 6,
+                "unique_classifications": ["Banker", "Messaging"],
+                "model_name": "static_mlp_v2/pure_python",
+                "status": "PASS",
+                "notes": "legacy payload",
+                "use_curated_fixtures": True,
+                "generated_summaries_available": False,
+                "generated_summary_paths": {},
+                "training_example_count": 12,
+                "average_training_quality_score": 88.5,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    result = read_learning_result_file(path)
+    assert result.schema_name == LEARNING_RUN_RESULT_SCHEMA_NAME
+    assert result.schema_version == LEARNING_RUN_RESULT_SCHEMA_VERSION
+    assert result.mode == "static_mlp_v2"

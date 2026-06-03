@@ -9,6 +9,7 @@ from typing import Iterable
 from iapetus.data.curated_seed_loaders import fixture_seed_as_labels
 from iapetus.curated_fixture_analysis import generated_summaries_available, generated_summary_paths
 from iapetus.labels.malware_label_text_renderer import render_malware_label, render_normal_app_label
+from iapetus.learning.learning_run_artifacts import write_artifact_manifest
 from iapetus.learning.learning_run_models import LearningRunManifest, LearningRunResult, generate_run_id
 from iapetus.learning.quality_gated_training_corpus import build_training_corpus
 from iapetus.snapshots.demo_snapshot_builder import demo_fixtures
@@ -117,6 +118,8 @@ def write_learning_artifacts(
         from iapetus.learning.curated_learning_artifacts import write_curated_learning_run_artifacts
 
         write_curated_learning_run_artifacts(run_dir, kind="smoke")
+
+    write_artifact_manifest(run_dir, run_id=result.run_id)
 
     from iapetus.database import register_learning_run  # noqa: PLC0415
 
